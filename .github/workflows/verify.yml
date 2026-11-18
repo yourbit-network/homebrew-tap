@@ -1,0 +1,44 @@
+name: Verify formulae on main
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Formula/**'
+      - '.github/workflows/verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@eb02c69dbabdb66ff183c614f4ce7ab3c077592c # 2026.10.12.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tap local checkout
+        run: |
+          mkdir -p "$(brew --repository)/Library/Taps/yourbit-network"
+          ln -snf "$GITHUB_WORKSPACE" "$(brew --repository)/Library/Taps/yourbit-network/homebrew-tap"
+      - name: Style and audit formula
+        run: |
+          brew style yourbit-network/tap/notibuddy
+          brew audit --strict yourbit-network/tap/notibuddy
+      - name: Install and test formula
+        run: |
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install yourbit-network/tap/notibuddy
+          brew test yourbit-network/tap/notibuddy
+          notibuddy --version
+          nb --version
