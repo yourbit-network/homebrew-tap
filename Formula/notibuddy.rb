@@ -1,8 +1,8 @@
 class Notibuddy < Formula
   desc "End-to-end encrypted push approval CLI and MCP server for iPhone and Watch"
   homepage "https://notibuddy.app/setup"
-  url "https://registry.npmjs.org/notibuddy/-/notibuddy-0.4.1.tgz"
-  sha256 "934c86dbbcfe0220e277609f1b9c68664fd0ebd8056beea6a088d3e231d318ec"
+  url "https://registry.npmjs.org/notibuddy/-/notibuddy-0.4.2.tgz"
+  sha256 "bcb12cccd9a47a91ff2d1677bd2a6088c34bef2c58d3f710c580d66073917c71"
   license "MIT"
 
   depends_on "node"
